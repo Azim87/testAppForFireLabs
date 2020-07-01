@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestApp</string>
+    <string name="add">Добавить</string>
+    <string name="name">Имя</string>
+    <string name="email">Электронный адрес</string>
+    <string name="comments">Комментарий</string>
+</resources>
