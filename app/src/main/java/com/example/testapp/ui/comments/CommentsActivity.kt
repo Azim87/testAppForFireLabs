@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testapp.R
 import com.example.testapp.model.Comments
 import com.example.testapp.ui.comments.adapter.CommentsAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_second.*
+import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import kotlinx.android.synthetic.main.item_alert.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -21,6 +23,8 @@ class CommentsActivity : AppCompatActivity() {
     private val mViewModel by viewModel<CommentsViewModel>()
     private lateinit var mAdapter: CommentsAdapter
     private val mCommentsList: ArrayList<Comments> = ArrayList()
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,8 @@ class CommentsActivity : AppCompatActivity() {
         title = "Comments"
         initRecycler()
         subscribeToViewModel()
+
+
     }
 
     private fun initRecycler() {
@@ -53,9 +59,19 @@ class CommentsActivity : AppCompatActivity() {
         })
     }
 
-    private fun onCommentsClick(comments: Comments) {}
+    private fun onCommentsClick(comments: Comments) {
+//        show bottom sheet with comments details
+        bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
+        view.bottom_name.text = "name \n" + comments.name
+        view.bottom_email.text = "email\n" + comments.email
+        view.bottom_body.text = "body \n" + comments.body
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
+    }
 
     private fun addCustomComments() {
+//        alert dialog to add custom comments
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.item_alert, null)
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setIcon(R.drawable.ic_launcher_background)
@@ -64,16 +80,19 @@ class CommentsActivity : AppCompatActivity() {
         val dialog: AlertDialog = alertDialog.create()
 
         mDialogView.add_button.setOnClickListener {
-            mCommentsList.add(Comments(
-                0,
-                0,
-                mDialogView.input_name.text.toString().trim(),
-                mDialogView.input_email.text.toString().trim(),
-                mDialogView.input_comments.text.toString().trim()
-            ))
-            if ( mDialogView.input_name.text.isEmpty() ||
+            mCommentsList.add(
+                Comments(
+                    0,
+                    0,
+                    mDialogView.input_name.text.toString().trim(),
+                    mDialogView.input_email.text.toString().trim(),
+                    mDialogView.input_comments.text.toString().trim()
+                )
+            )
+            if (mDialogView.input_name.text.isEmpty() ||
                 mDialogView.input_email.text.isEmpty() ||
-                mDialogView.input_comments.text.isEmpty()) {
+                mDialogView.input_comments.text.isEmpty()
+            ) {
                 mDialogView.input_name.error = "введите имя"
                 mDialogView.input_email.error = "введите имя"
                 mDialogView.input_comments.error = "введите имя"
